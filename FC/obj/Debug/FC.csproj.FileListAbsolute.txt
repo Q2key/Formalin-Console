@@ -1,0 +1,14 @@
+c:\users\dtocque\documents\visual studio 2015\Projects\FC\FC\bin\Debug\FC.exe.config
+c:\users\dtocque\documents\visual studio 2015\Projects\FC\FC\bin\Debug\FC.exe
+c:\users\dtocque\documents\visual studio 2015\Projects\FC\FC\bin\Debug\FC.pdb
+c:\users\dtocque\documents\visual studio 2015\Projects\FC\FC\obj\Debug\FC.csprojResolveAssemblyReference.cache
+c:\users\dtocque\documents\visual studio 2015\Projects\FC\FC\obj\Debug\FC.exe
+c:\users\dtocque\documents\visual studio 2015\Projects\FC\FC\obj\Debug\FC.pdb
+C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\EntityFramework.dll
+C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\System.Data.SQLite.dll
+C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\System.Data.SQLite.EF6.dll
+C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\System.Data.SQLite.Linq.dll
+C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\EntityFramework.xml
+C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\System.Data.SQLite.xml
