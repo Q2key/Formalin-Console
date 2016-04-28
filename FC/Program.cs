@@ -9,7 +9,7 @@ namespace FC
         {           
             Inspector.GetChangesInDirAsync();
             DBtraveler.CreateDb();
-            ComadReader.ComandExecute();           
+            ComReader.ComandExecute();           
             Console.ForegroundColor = ConsoleColor.White;
             Console.ReadKey();
         }
