@@ -68,7 +68,6 @@ namespace FC
                 Console.WriteLine(ex.Message);
             }
         }
-
         public static List<Plates> RetriveFromBaseToDate(string state,DateTime from, DateTime to)
         {   
 
@@ -131,11 +130,8 @@ namespace FC
             FillRasteredPlatesTableFromRegEx(_con);
             FillImagedPlatesTableFromRegEx(_con);
         } 
-
         private static void FillImagedPlatesTableFromRegEx(SQLiteConnection con)
         {
-
-
             var logfiles = LogEnumrator();
             using (var trans = con.BeginTransaction())
             {
@@ -147,16 +143,11 @@ namespace FC
                     var paramcmd = new SQLiteCommand(sqlCommand, con) {CommandText = sqlCommand};
                     foreach (Match match in Parser.ParseImagePlates("Root").Matches(logfile))
                     {
-                        paramcmd.Parameters.AddWithValue("@PHeader",
-                            Parser.ParseImagePlates("PHeader").Match(match.Value).Groups["jobname"].Value);
-                        paramcmd.Parameters.AddWithValue("@Separation",
-                            Parser.ParseImagePlates("PSeparation").Match(match.Value).Groups["separ"].Value.ToUpper());
-                        paramcmd.Parameters.AddWithValue("@PDatetime",
-                            FormateDate(Parser.ParseImagePlates("PDatetime").Match(match.Value).Groups["datetime"].Value));
-                        paramcmd.Parameters.AddWithValue("@PSheet",
-                            Parser.ParseImagePlates("PSheet").Match(match.Value).Groups["sheet"].Value);
-                        paramcmd.Parameters.AddWithValue("@PexpoTime",
-                            Parser.ParseImagePlates("Pexpotime").Match(match.Value).Groups["expotime"].Value);
+                        paramcmd.Parameters.AddWithValue("@PHeader", Parser.ParseImagePlates("PHeader").Match(match.Value).Groups["jobname"].Value);
+                        paramcmd.Parameters.AddWithValue("@Separation", Parser.ParseImagePlates("PSeparation").Match(match.Value).Groups["separ"].Value.ToUpper());
+                        paramcmd.Parameters.AddWithValue("@PDatetime", FormateDate(Parser.ParseImagePlates("PDatetime").Match(match.Value).Groups["datetime"].Value));
+                        paramcmd.Parameters.AddWithValue("@PSheet", Parser.ParseImagePlates("PSheet").Match(match.Value).Groups["sheet"].Value);
+                        paramcmd.Parameters.AddWithValue("@PexpoTime", Parser.ParseImagePlates("Pexpotime").Match(match.Value).Groups["expotime"].Value);
                         try
                         {
                             paramcmd.ExecuteNonQuery();
@@ -185,14 +176,10 @@ namespace FC
                     foreach (Match match in Parser.ParseRasteredPlates("PHeader").Matches(logfile))
                     {
                         paramcmd.Parameters.AddWithValue("@PHeader", match.Value);
-                        paramcmd.Parameters.AddWithValue("@PSeparation",
-                            Parser.ParseRasteredPlates("PSeparation").Matches(logfile)[i].Value.ToUpper());
-                        paramcmd.Parameters.AddWithValue("@PType",
-                            Parser.ParseRasteredPlates("PType").Matches(logfile)[i].Value);
-                        paramcmd.Parameters.AddWithValue("@PDpi",
-                            Parser.ParseRasteredPlates("PDpi").Matches(logfile)[i].Value);
-                        paramcmd.Parameters.AddWithValue("@Rawdate",
-                            FormateDate(Parser.ParseRasteredPlates("Rawdate").Match(logfile).Groups["rawdate"].Value));
+                        paramcmd.Parameters.AddWithValue("@PSeparation", Parser.ParseRasteredPlates("PSeparation").Matches(logfile)[i].Value.ToUpper());
+                        paramcmd.Parameters.AddWithValue("@PType",Parser.ParseRasteredPlates("PType").Matches(logfile)[i].Value);
+                        paramcmd.Parameters.AddWithValue("@PDpi", Parser.ParseRasteredPlates("PDpi").Matches(logfile)[i].Value);
+                        paramcmd.Parameters.AddWithValue("@Rawdate",FormateDate(Parser.ParseRasteredPlates("Rawdate").Match(logfile).Groups["rawdate"].Value));
                         try
                         {
                             paramcmd.ExecuteNonQuery();
@@ -207,7 +194,6 @@ namespace FC
                 trans.Commit();
             }
         }
-
         private static DateTime FormateDate(string incommingdate)
         {
             var regm = new Regex(@"[\d]{2}(?<M>[\w]{3})[\d]{2}");
@@ -275,86 +261,105 @@ namespace FC
             var mi = Convert.ToInt32(m);
             return new DateTime(y, mi, d, hh, mm, ss, ms).AddHours(4);
         }
-        public static void AutoFillImagedPlates(string log)
+        public static void AutoFillImagedPlates(string target)
         {
             var con = new SQLiteConnection(@"Data Source=D:\plates.db; Version=3;");
             if (con.State != ConnectionState.Open)
             {
                 con.Open();
             }
+            var il = new List<Plates>();
+            foreach (Match match in Parser.ParseImagePlates("Root").Matches(target))
+            {
+                il.Add(new Plates()
+                {
+                    PHeader = Parser.ParseImagePlates("PHeader").Match(match.Value).Groups["jobname"].Value,
+                    PSeparation = Parser.ParseImagePlates("PSeparation").Match(match.Value).Groups["separ"].Value.ToUpper(),
+                    PDatetime = Parser.ParseImagePlates("PDatetime").Match(match.Value).Groups["datetime"].Value,
+                    PSheet = Parser.ParseImagePlates("PSheet").Match(match.Value).Groups["sheet"].Value,
+                    PexpoTime = Parser.ParseImagePlates("Pexpotime").Match(match.Value).Groups["expotime"].Value
+                });
+            }
+            if (il.Count == 0)
+            {
+                return;
+            }
+            var lastplates = il[il.Count - 1];
+
             using (var trans = con.BeginTransaction())
             {
                 const string sqlCommand =
-                    "INSERT INTO ImagedPlates(PHeader, PSeparation, PState, PDate, PTime, PexpoTime, PSheet) " +
-                    "VALUES (@PHeader, @Separation, @PState, @PDate, @PTime, @PexpoTime, @PSheet);";
+                    "INSERT INTO ImagedPlates(PHeader, PSeparation, PDatetime, PexpoTime, PSheet) " +
+                    "VALUES (@PHeader, @Separation, @PDatetime, @PexpoTime, @PSheet);";
                 var paramcmd = new SQLiteCommand(sqlCommand, con) {CommandText = sqlCommand};
-                foreach (Match match in Parser.ParseImagePlates("Root").Matches(log))
-                {
-                    paramcmd.Parameters.AddWithValue("@PHeader",
-                        Parser.ParseImagePlates("PHeader").Match(match.Value).Groups["jobname"].Value);
-                    paramcmd.Parameters.AddWithValue("@Separation",
-                        Parser.ParseImagePlates("PSeparation").Match(match.Value).Groups["separ"].Value.ToUpper());
-                    paramcmd.Parameters.AddWithValue("@PState",
-                        Parser.ParseImagePlates("PState").Match(match.Value).Value);
-                    paramcmd.Parameters.AddWithValue("@PDate",
-                        Parser.ParseImagePlates("PDate").Match(match.Value).Groups["date"].Value);
-                    paramcmd.Parameters.AddWithValue("@PTime",
-                        Parser.ParseImagePlates("PTime").Match(match.Value).Groups["time"].Value);
-                    paramcmd.Parameters.AddWithValue("@PSheet",
-                        Parser.ParseImagePlates("PSheet").Match(match.Value).Groups["sheet"].Value);
-                    paramcmd.Parameters.AddWithValue("@PexpoTime",
-                        Parser.ParseImagePlates("Pexpotime").Match(match.Value).Groups["expotime"].Value);
-                    try
-                    {
-                        paramcmd.ExecuteNonQuery();
-                    }
-                    catch (SQLiteException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
 
+                paramcmd.Parameters.AddWithValue("@PHeader", lastplates.PHeader);
+                paramcmd.Parameters.AddWithValue("@Separation", lastplates.PSeparation);
+                paramcmd.Parameters.AddWithValue("@PDatetime", lastplates.PDatetime);
+                paramcmd.Parameters.AddWithValue("PSheet", lastplates.PSheet);
+                paramcmd.Parameters.AddWithValue("@PexpoTime", lastplates.PexpoTime);
+                try
+                {
+                    paramcmd.ExecuteNonQuery();
+                }
+                catch (SQLiteException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
                 trans.Commit();
             }
+            con.Close();
         }
-        public static void AutoFillRasteredPlates(string log)
+        public static void AutoFillRasteredPlates(string target)
         {
             var con = new SQLiteConnection(@"Data Source=D:\plates.db; Version=3;");
             if (con.State != ConnectionState.Open)
             {
                 con.Open();
             }
+            var rl = new List<Plates>();
+            var index = 0;
+            foreach (Match match in Parser.ParseRasteredPlates("PHeader").Matches(target))
+            {
+                rl.Add(new Plates()
+                {
+                    PHeader = match.Value,
+                    PSeparation = Parser.ParseRasteredPlates("PSeparation").Matches(target)[index].Value.ToUpper(),
+                    PType = Parser.ParseRasteredPlates("PType").Matches(target)[index].Value,
+                    PleDpi = Parser.ParseRasteredPlates("PDpi").Matches(target)[index].Value,
+                    Rawdate = Parser.ParseRasteredPlates("Rawdate").Match(target).Groups["rawdate"].Value
+                });
+
+                index++;
+            }
+            if (rl.Count == 0)
+            {
+                return;
+            }
+            var rlasplate = rl[rl.Count - 1];
             using (var trans = con.BeginTransaction())
             {
                 const string sqlCommand =
-                    "INSERT INTO RasteredPlates(PHeader, PSeparation, PType, PDpi) " +
-                    "VALUES (@PHeader, @PSeparation, @PType, @PDpi);";
+                    "INSERT INTO RasteredPlates(PHeader, PSeparation, PType, PDpi, Rawdate) " +
+                    "VALUES (@PHeader, @PSeparation, @PType, @PDpi, @Rawdate);";
                 var paramcmd = new SQLiteCommand(sqlCommand, con) {CommandText = sqlCommand};
-                var i = 0;
-                foreach (Match match in Parser.ParseRasteredPlates("PHeader").Matches(log))
+                paramcmd.Parameters.AddWithValue("@PHeader", rlasplate.PHeader);
+                paramcmd.Parameters.AddWithValue("@PSeparation", rlasplate.PSeparation);
+                paramcmd.Parameters.AddWithValue("@PType", rlasplate.PSeparation);
+                paramcmd.Parameters.AddWithValue("@PDpi", rlasplate.PleDpi);
+                paramcmd.Parameters.AddWithValue(@"Rawdate", rlasplate.Rawdate);
+                try
                 {
-                    paramcmd.Parameters.AddWithValue("@PHeader", match.Value);
-                    paramcmd.Parameters.AddWithValue("@PSeparation",
-                        Parser.ParseRasteredPlates("PSeparation").Matches(log)[i].Value.ToUpper());
-                    paramcmd.Parameters.AddWithValue("@PType",
-                        Parser.ParseRasteredPlates("PType").Matches(log)[i].Value);
-                    paramcmd.Parameters.AddWithValue("@PDpi",
-                        Parser.ParseRasteredPlates("PDpi").Matches(log)[i].Value);
-                    try
-                    {
-                        paramcmd.ExecuteNonQuery();
-                    }
-                    catch (SQLiteException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                    i++;
+                    paramcmd.ExecuteNonQuery();
+                }
+                catch (SQLiteException ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
 
                 trans.Commit();
             }
+            con.Close();
         }
-
-
     }
 }

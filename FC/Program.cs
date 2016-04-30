@@ -7,7 +7,7 @@ namespace FC
     {
         static void Main(string[] args)
         {           
-            Inspector.GetChangesInDirAsync();
+            Inspector.Watch();
             DBtraveler.CreateDb();
             ComReader.ComandExecute();           
             Console.ForegroundColor = ConsoleColor.White;

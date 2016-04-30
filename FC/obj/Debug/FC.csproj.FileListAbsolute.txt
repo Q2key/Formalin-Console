@@ -12,3 +12,17 @@ C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\System.Da
 C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\EntityFramework.xml
 C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Dtocque\Documents\Visual Studio 2015\Projects\FC\FC\bin\Debug\System.Data.SQLite.xml
+D:\VSP\Formalin-Console\FC\bin\Debug\FC.exe.config
+D:\VSP\Formalin-Console\FC\obj\Debug\FC.exe
+D:\VSP\Formalin-Console\FC\obj\Debug\FC.pdb
+D:\VSP\Formalin-Console\FC\obj\Debug\FC.csprojResolveAssemblyReference.cache
+D:\VSP\Formalin-Console\FC\bin\Debug\FC.exe
+D:\VSP\Formalin-Console\FC\bin\Debug\FC.pdb
+D:\VSP\Formalin-Console\FC\bin\Debug\EntityFramework.dll
+D:\VSP\Formalin-Console\FC\bin\Debug\EntityFramework.SqlServer.dll
+D:\VSP\Formalin-Console\FC\bin\Debug\System.Data.SQLite.dll
+D:\VSP\Formalin-Console\FC\bin\Debug\System.Data.SQLite.EF6.dll
+D:\VSP\Formalin-Console\FC\bin\Debug\System.Data.SQLite.Linq.dll
+D:\VSP\Formalin-Console\FC\bin\Debug\EntityFramework.xml
+D:\VSP\Formalin-Console\FC\bin\Debug\EntityFramework.SqlServer.xml
+D:\VSP\Formalin-Console\FC\bin\Debug\System.Data.SQLite.xml

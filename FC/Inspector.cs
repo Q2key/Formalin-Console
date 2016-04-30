@@ -1,53 +1,40 @@
 ﻿using System;
+using System.Data.SQLite;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace FC
 {
     public class Inspector
     {
-        private const string Path = @"D:\Logtest";
-        private static DateTime _basestate;
-        private static int _namecounter = 0;
-        public static void GetChangesInDirAsync()
+        public static void Watch()
         {
-            _basestate = DateTime.Now;
-            var thread = new Thread(SetTimer);
-            thread.IsBackground = true;
-            thread.Start();
+            var fw = new FileSystemWatcher(@"D:\Logtest");
+            fw.NotifyFilter = NotifyFilters.Size;
+            fw.Filter = "*.log";
+            fw.Path = @"D:\Logtest";
+            fw.Changed += FwOnChanged;
+
+            fw.IncludeSubdirectories = false;
+            fw.EnableRaisingEvents = true;
         }
-        private static void CheckDirectory()
+        private static void FwOnChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
         {
-            if (Directory.GetLastWriteTime(Path) > _basestate)
+            Console.WriteLine("Changed. \n{0}.", fileSystemEventArgs.FullPath);
+            var startlocation = fileSystemEventArgs.FullPath;
+            var destlocation = @"D:\Logtest\Carantine\" + fileSystemEventArgs.Name;
+            try
             {
-                _basestate = Directory.GetLastWriteTime(Path);
-                var files = Directory.GetFiles(Path);
-                if (files.Length == 0) return;
-                var target = files[files.Length - 1];
-
-                if (File.GetLastWriteTime(target) < Directory.GetLastWriteTime(Path) && files.Length > 1)
-                {
-                    CopyToCarantine(target, files, _namecounter);
-                    _namecounter ++;
-                }
+                File.Copy(startlocation, destlocation, true);
+                DBtraveler.AutoFillImagedPlates(File.ReadAllText(destlocation));
+                DBtraveler.AutoFillRasteredPlates(File.ReadAllText(destlocation));
             }
-        }
-        private static void CopyToCarantine(string target, string[] files, int nameindex)
-        {
-            if (target == null) throw new ArgumentNullException(nameof(target));
-            target = files[files.Length - 2];
-            Console.WriteLine(target);
-
-            File.Copy(target, @"D:\Logtest\Carantine\" + System.IO.Path.GetFileName(target));
-            File.Move(@"D:\Logtest\Carantine\" + System.IO.Path.GetFileName(target),
-                @"D:\Logtest\Carantine\" + (nameindex) + ".log");
-
-            DBtraveler.AutoFillImagedPlates(File.ReadAllText(target));
-        }
-        private static void SetTimer()
-        {
-            TimerCallback timerCallback = state => CheckDirectory();
-            new Timer(timerCallback, null, 0, 1000);
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
