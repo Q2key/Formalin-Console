@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace FC
 {
@@ -11,14 +10,14 @@ namespace FC
             DBtraveler.CreateDb();
             ComReader.ComandExecute();           
             Console.ForegroundColor = ConsoleColor.White;
-            Console.ReadKey();
+            Console.ReadKey();            
         }
         static void TestSpeed()
         {
-            var start = DateTime.Now;
+            /*var start = DateTime.Now;
             Parser.Test(File.ReadAllText(@"D:\Logtest\Jasper000.log"));
             var end = DateTime.Now;
-            Console.WriteLine("Выполнение метода заняло {0} мс", (end - start).TotalMilliseconds);
+            Console.WriteLine("Выполнение метода заняло {0} мс", (end - start).TotalMilliseconds);*/
         }
     }
 }

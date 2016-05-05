@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,16 +11,16 @@ namespace FC
 {
     public class DBtraveler : DataTraveler
     {
-        private const string Bname = "plates.db";
-        private const string Bpath = @"D:\";
+        private const string DbName = "plates.db";
+        private const string DbPath = @"D:\";
         private static SQLiteConnection _con;
         public static void CreateDb()
         {
-            _con = new SQLiteConnection($@"Data Source={Bpath}{Bname}; Version=3;");
-            if (!File.Exists($@"{Bpath}{Bname}"))
+            _con = new SQLiteConnection($@"Data Source={DbPath}{DbName}; Version=3;");
+            if (!File.Exists($@"{DbPath}{DbName}"))
             {
                 Console.WriteLine("Creating data base");
-                SQLiteConnection.CreateFile($@"{Bpath}{Bname}");
+                SQLiteConnection.CreateFile($@"{DbPath}{DbName}");
                 _con.Open();
                 CreateTable(_con);
                 FillDataBase();
@@ -70,7 +69,6 @@ namespace FC
         }
         public static List<Plates> RetriveFromBaseToDate(string state,DateTime from, DateTime to)
         {   
-
             var result = new List<Plates>();
             var con = new SQLiteConnection(@"Data Source=D:\plates.db; Version=3;");
             if (con.State != ConnectionState.Open)
@@ -101,8 +99,7 @@ namespace FC
                     {
                         
                        Console.WriteLine(ex.Message);
-                    }
-                    
+                    }                    
                 }
             }
             else if (state == "rastered")
@@ -263,7 +260,7 @@ namespace FC
         }
         public static void AutoFillImagedPlates(string target)
         {
-            var con = new SQLiteConnection(@"Data Source=D:\plates.db; Version=3;");
+            var con = new SQLiteConnection($@"Data Source={DbPath}{DbName}; Version=3;");
             if (con.State != ConnectionState.Open)
             {
                 con.Open();
@@ -312,7 +309,7 @@ namespace FC
         }
         public static void AutoFillRasteredPlates(string target)
         {
-            var con = new SQLiteConnection(@"Data Source=D:\plates.db; Version=3;");
+            var con = new SQLiteConnection($@"Data Source={DbPath}{DbName}; Version=3;");
             if (con.State != ConnectionState.Open)
             {
                 con.Open();

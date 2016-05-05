@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -9,9 +9,10 @@ namespace FC
     public class DataTraveler
     {
         private static List<Plates> _unregqueueList;
+        private const string KodakLogPath = @"D:\Logtest";
         public static string[] LogEnumrator()
         {
-            var loglist = Directory.GetFiles(@"D:\Logtest");//Server`s log directory
+            var loglist = Directory.GetFiles(KodakLogPath);//Server`s log directory
             var majorarraylog = new string[loglist.Length];
             var index = 0;
             foreach (var log in loglist)
@@ -28,7 +29,7 @@ namespace FC
         {
            
             var workflows = WorkflowCreatorFromDate();
-            var s = string.Empty;
+            var s = String.Empty;
             for (var i = 0; i < workflows.Count; i++)
             {
                 for (var j = 0; j < s.Length-1;j++)
@@ -82,7 +83,7 @@ namespace FC
             Console.Write("From date: ");
             var linefrom = Console.ReadLine();
             DateTime from;
-            while (!DateTime.TryParseExact(linefrom, "yyyy/MM/dd", null, System.Globalization.DateTimeStyles.None, out from))
+            while (!DateTime.TryParseExact(linefrom, "yyyy/MM/dd", null, DateTimeStyles.None, out @from))
             {
                 Console.Write(" Invalid date, please retry");
                 linefrom = Console.ReadLine();
@@ -90,13 +91,13 @@ namespace FC
             Console.Write("To date: ");
             var lineto = Console.ReadLine();
             DateTime to;
-            while (!DateTime.TryParseExact(lineto, "yyyy/MM/dd", null, System.Globalization.DateTimeStyles.None, out to))
+            while (!DateTime.TryParseExact(lineto, "yyyy/MM/dd", null, DateTimeStyles.None, out to))
             {
                 Console.Write(" Invalid date, please retry");
                 lineto = Console.ReadLine();
             }
-            var queueplates = DBtraveler.RetriveFromBaseToDate("rastered", from, to);
-            var explates = DBtraveler.RetriveFromBaseToDate("imaged", from, to);
+            var queueplates = DBtraveler.RetriveFromBaseToDate("rastered", @from, to);
+            var explates = DBtraveler.RetriveFromBaseToDate("imaged", @from, to);
             var workflows = new List<Workflow>();
             var wfcont = new List<string>();
 
@@ -177,7 +178,7 @@ namespace FC
             {
                 return;
             }
-            workflows.Sort((p1, p2) => string.Compare(p1.WfPlateType, p2.WfPlateType, StringComparison.Ordinal));
+            workflows.Sort((p1, p2) => String.Compare(p1.WfPlateType, p2.WfPlateType, StringComparison.Ordinal));
             var majorstatlist = new List<List<Workflow>>();
             var temp = new List<Workflow>();
             var cur = workflows[0];
@@ -231,7 +232,7 @@ namespace FC
                 totalplatescount = 0;
             }
             Console.WriteLine();
-        }      
+        }
     }
 }
 

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Data.SQLite;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace FC
 {
@@ -16,7 +12,6 @@ namespace FC
             fw.Filter = "*.log";
             fw.Path = @"D:\Logtest";
             fw.Changed += FwOnChanged;
-
             fw.IncludeSubdirectories = false;
             fw.EnableRaisingEvents = true;
         }
